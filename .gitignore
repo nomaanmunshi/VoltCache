@@ -1,0 +1,8 @@
+/build*/
+__pycache__/
+*.py[cod]
+/demo/data/
+/benchmark-results/
+.DS_Store
+
+/node_modules/

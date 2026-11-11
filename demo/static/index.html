@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#153c32" />
+    <title>VoltCache · URL shortener</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="VoltCache home"
+        ><span class="mark">V<span>c</span></span
+        >VoltCache</a
+      >
+      <nav class="header-note" aria-label="Page sections">
+        <a href="#create-form">Shorten a link</a
+        ><a href="#trace">Inspect a request</a><a href="#links">Your links</a>
+      </nav>
+      <div class="status" id="status" role="status">
+        <span class="dot"></span><span id="status-text">Connecting</span>
+      </div>
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <p class="eyebrow hero-label">
+            <span class="mini-dot green"></span> BUILT IN C++. MADE TO BE
+            UNDERSTOOD.
+          </p>
+          <h1>Less waiting.<br /><span>More remembering.</span></h1>
+          <p class="intro-copy">
+            Your data, a little closer. Create a short link and watch a real<br
+              class="desktop-break"
+            />
+            C++ cache handle the next request.
+          </p>
+          <div class="hero-actions">
+            <a class="hero-cta" href="#create-form"
+              >Try it live
+              <svg class="arrow-icon" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M4 16 16 4M5 4h11v11" /></svg></a
+            ><span class="hero-detail">In memory. On your machine.</span>
+          </div>
+        </div>
+        <div
+          class="architecture"
+          aria-label="C++ cache with hash map lookup, LRU eviction, and time-based expiration"
+        >
+          <div class="visual-top">
+            <span class="terminal-dot"></span><span>voltcache-server</span
+            ><span class="visual-version">C++17 / TCP</span>
+          </div>
+          <div class="cache-visual" aria-hidden="true">
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="stack-layer layer-bottom">
+              <span>TTL</span><i></i><i></i><i></i>
+            </div>
+            <div class="stack-layer layer-middle">
+              <span>LRU</span><i></i><i></i><i></i>
+            </div>
+            <div class="stack-layer layer-top">
+              <span>VC</span><small>IN MEMORY</small>
+            </div>
+            <span class="data-label label-left">GET key</span
+            ><span class="data-label label-right">VALUE</span>
+            <span class="visual-packet packet-in"></span
+            ><span class="visual-packet packet-out"></span>
+          </div>
+          <div class="visual-bottom">
+            <span><i class="mini-dot green"></i> Single-node cache</span
+            ><code>hash map + linked list</code>
+          </div>
+        </div>
+      </section>
+      <div class="feature-strip" aria-label="Cache capabilities">
+        <span>STRING KEYS & VALUES</span><span>LRU EVICTION</span
+        ><span>TIME-BASED EXPIRATION</span><span>BOUNDED QUEUE</span
+        ><span>SQLITE FALLBACK</span>
+      </div>
+      <section class="metrics" aria-label="Demo statistics">
+        <article>
+          <span class="metric-label">Cache hit rate</span>
+          <div>
+            <strong id="hit-rate">—</strong
+            ><span class="metric-unit">of cache lookups</span>
+          </div>
+          <div class="meter"><span id="hit-bar"></span></div>
+        </article>
+        <article>
+          <span class="metric-label">Cache hits</span
+          ><strong id="cache-hits">—</strong
+          ><small>Served from VoltCache</small>
+        </article>
+        <article>
+          <span class="metric-label">Database reads</span
+          ><strong id="db-reads">—</strong
+          ><small>Cache misses & fallback</small>
+        </article>
+        <article>
+          <span class="metric-label">Cache entries</span>
+          <div>
+            <strong id="entries">—</strong
+            ><span class="metric-unit" id="capacity"></span>
+          </div>
+          <small id="ttl-note">Temporary copies</small>
+        </article>
+      </section>
+      <div class="workspace">
+        <section class="panel create-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">01 / CREATE</p>
+              <h2>Make a short link</h2>
+            </div>
+            <span class="tag">Saved in SQLite</span>
+          </div>
+          <form id="create-form">
+            <label for="destination">Destination URL</label>
+            <input
+              id="destination"
+              name="url"
+              type="url"
+              placeholder="https://example.com/something-worth-sharing"
+              required
+              maxlength="2048"
+              autocomplete="url"
+            />
+            <div class="alias-label">
+              <label for="alias">Custom code</label><span>Optional</span>
+            </div>
+            <div class="alias-input">
+              <span>/s/</span
+              ><input
+                id="alias"
+                name="alias"
+                placeholder="my-link"
+                pattern="[A-Za-z0-9_-]{3,32}"
+                maxlength="32"
+                aria-describedby="alias-help"
+              />
+            </div>
+            <p class="input-help" id="alias-help">
+              3–32 letters, numbers, hyphens, or underscores.
+            </p>
+            <button class="primary" id="create-button" type="submit">
+              Create short link
+              <svg class="arrow-icon" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M4 16 16 4M5 4h11v11" />
+              </svg>
+            </button>
+            <p class="message" id="form-message" role="status"></p>
+          </form>
+          <div class="result" id="result" hidden>
+            <span class="eyebrow">YOUR LINK IS READY</span>
+            <div class="result-row">
+              <a id="short-url" href="#" target="_blank" rel="noopener"></a
+              ><button class="icon-button" id="copy-button" type="button">
+                Copy
+              </button>
+            </div>
+            <p>Try “Resolve” below to see the cache in action.</p>
+          </div>
+          <div class="note">
+            <span class="note-icon">i</span>
+            <p>
+              Links stay in SQLite when the cache restarts. If VoltCache goes
+              offline, the app reads SQLite directly.
+            </p>
+          </div>
+        </section>
+        <section class="panel trace-panel">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">02 / INSPECT</p>
+              <h2>Follow a lookup</h2>
+            </div>
+            <span class="live-label"
+              ><span class="mini-dot green"></span> Real requests</span
+            >
+          </div>
+          <p class="section-copy">
+            Resolve a code without leaving this page. First lookup fills the
+            cache; repeat it before expiry to get a hit.
+          </p>
+          <form id="resolve-form" class="resolve-form">
+            <label class="sr-only" for="resolve-code">Short code</label
+            ><input
+              id="resolve-code"
+              placeholder="Enter a short code"
+              pattern="[A-Za-z0-9_-]{3,32}"
+              required
+            /><button class="secondary" id="resolve-button" type="submit">
+              Resolve <span aria-hidden="true">→</span>
+            </button>
+          </form>
+          <div
+            class="request-route"
+            id="request-route"
+            aria-label="Lookup path"
+          >
+            <div class="route-node" id="route-app">
+              <span>01</span><strong>App</strong>
+            </div>
+            <div class="route-wire"><i></i></div>
+            <div class="route-node" id="route-cache">
+              <span>02</span><strong>Cache</strong>
+            </div>
+            <div class="route-wire db-wire"><i></i></div>
+            <div class="route-node" id="route-db">
+              <span>03</span><strong>SQLite</strong>
+            </div>
+          </div>
+          <div class="trace" id="trace" aria-live="polite">
+            <div class="trace-heading">
+              <span class="trace-symbol" id="trace-symbol">↳</span>
+              <div>
+                <strong id="trace-title">Waiting for a lookup</strong
+                ><span id="trace-subtitle"
+                  >Create a link or choose one below.</span
+                >
+              </div>
+            </div>
+            <ol id="trace-steps">
+              <li class="idle"><span>1</span>Ask VoltCache</li>
+              <li class="idle"><span>2</span>Read SQLite on a miss</li>
+              <li class="idle"><span>3</span>Cache the destination</li>
+            </ol>
+            <div id="trace-destination" hidden>
+              <span>DESTINATION</span
+              ><a id="trace-url" target="_blank" rel="noopener"></a>
+            </div>
+          </div>
+          <p class="trace-footnote">
+            The cache stores temporary copies. This demo does not claim that a
+            TCP cache beats a local SQLite lookup.
+          </p>
+        </section>
+      </div>
+      <section class="panel links-panel" id="links">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">03 / YOUR LINKS</p>
+            <h2>Recent links</h2>
+          </div>
+          <button class="text-button" id="refresh-button" type="button">
+            Refresh <span aria-hidden="true">↻</span>
+          </button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Short link</th>
+                <th>Destination</th>
+                <th>Created</th>
+                <th><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="link-list">
+              <tr>
+                <td colspan="4" class="empty">
+                  No links yet. Create your first one above.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">
+          Latest 12 links · Immutable destinations · Local demonstration
+        </p>
+      </section>
+      <footer>
+        <span
+          >VoltCache <span class="footer-dash">—</span> A cache you can
+          explain.</span
+        ><span>Hash map + linked list · LRU eviction · TTL</span>
+      </footer>
+    </main>
+  </body>
+</html>

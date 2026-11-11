@@ -1,0 +1,68 @@
+{
+  "timestamp": "2026-11-11T14:10:46Z",
+  "environment": {
+    "os": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "machine": "x86_64",
+    "processor": "AMD EPYC 9V74 80-Core Processor",
+    "logical_cpus": 9,
+    "python": "3.12.14",
+    "server_build": "Release, GCC 14.2.0, C++17",
+    "note": "Shared development container; CPU scheduling quota and competing load were not controlled."
+  },
+  "workload": {
+    "host": "127.0.0.1",
+    "port": 36091,
+    "clients": 4,
+    "requests_per_client": 2000,
+    "keys": 100,
+    "value_bytes": 128,
+    "requested_hit_ratio": 0.8,
+    "connection": "persistent, one outstanding GET per client",
+    "seed": 1729
+  },
+  "results": {
+    "elapsed_seconds": 0.338981,
+    "successes": 8000,
+    "errors": 0,
+    "hits": 6360,
+    "misses": 1640,
+    "successful_requests_per_second": 23600.13,
+    "latency_microseconds": {
+      "p50": 149.561,
+      "p95": 352.922,
+      "p99": 484.677
+    }
+  },
+  "server_before": {
+    "entries": 100,
+    "capacity": 10000,
+    "hits": 0,
+    "misses": 0,
+    "evictions": 0,
+    "expired_entries_removed": 0,
+    "connected_clients": 1,
+    "queue_depth": 0,
+    "queue_peak": 1,
+    "queue_capacity": 1024,
+    "commands": 102,
+    "busy_responses": 0,
+    "rejected_clients": 0,
+    "uptime_seconds": 0
+  },
+  "server_after": {
+    "entries": 100,
+    "capacity": 10000,
+    "hits": 6360,
+    "misses": 1640,
+    "evictions": 0,
+    "expired_entries_removed": 0,
+    "connected_clients": 1,
+    "queue_depth": 0,
+    "queue_peak": 4,
+    "queue_capacity": 1024,
+    "commands": 8103,
+    "busy_responses": 0,
+    "rejected_clients": 0,
+    "uptime_seconds": 0
+  }
+}
